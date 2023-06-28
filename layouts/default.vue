@@ -9,7 +9,7 @@ useHead({
 });
 </script>
 <template>
-    <div class="h-screen bg-[#DFDFDF] dark:bg-[#0C0C0C]">
+    <div class="h-screen">
       <slot />
     </div>
 </template>
