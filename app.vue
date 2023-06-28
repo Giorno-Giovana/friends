@@ -1,5 +1,7 @@
 <template>
   <div>
-    Frineds
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
