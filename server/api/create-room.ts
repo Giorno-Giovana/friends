@@ -1,5 +1,5 @@
-import { Room } from "~/models/room"
+import { IRoom, Room } from "~/models/room"
 
-export default defineEventHandler(async () => {
+export default defineEventHandler<IRoom>(async () => {
     return new Room().save()
 })

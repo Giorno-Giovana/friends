@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-expect-error
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 useHead({ title: "Friends" });
