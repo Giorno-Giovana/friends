@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
+    "nuxt-mongoose": "^0.0.8",
     "vue-cal": "^4.8.1"
   }
 }
