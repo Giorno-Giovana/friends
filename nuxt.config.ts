@@ -16,6 +16,5 @@ export default defineNuxtConfig({
   mongoose: {
     uri: process.env.MONGODB_URI ?? 'mongodb://localhost:27017',
     options: {},
-    modelsDir: 'models',
   }
 })
