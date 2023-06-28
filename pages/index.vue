@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useApi } from '~~/composables/useApi';
 useHead({ title: "Friends" });
 
 const roomCreation = ref(false);
 const roomName = ref("");
 
 async function createRoom() {
-    const responce = await useApi('puk');
+    const {data} = useFetch('/api/create-room')
 }
 
 </script>
@@ -18,7 +17,7 @@ async function createRoom() {
         </div>
         <div v-else class="w-[90vw] mx-auto">
             <my-input id="Room_name" placeholder="Введите название комнаты" v-model="roomName">Название комнаты</my-input>
-            <my-button class="mt-10" @click="createRoom()">Создать</my-button>
+            <my-button class="mt-10" @click="createRoom">Создать</my-button>
         </div>
     </div>
 </template>
