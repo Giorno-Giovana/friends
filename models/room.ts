@@ -2,8 +2,9 @@ import { defineMongooseModel } from "#nuxt/mongoose";
 import type { Model } from 'mongoose'
 
 export interface IRoom {
-    title: string,
-    users: string[],
+    _id: string
+    title: string
+    users: string[]
     events: Array<{ title: string, start: Date, end: Date }>
 }
 

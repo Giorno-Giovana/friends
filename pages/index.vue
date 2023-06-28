@@ -5,7 +5,8 @@ const roomCreation = ref(false);
 const roomName = ref("");
 
 async function createRoom() {
-    const {data} = useFetch('/api/create-room')
+    const { _id } = await $fetch('/api/create-room')
+    useRouter().push('/room/'+_id)
 }
 
 </script>
