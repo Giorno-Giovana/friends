@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    'nuxt-mongoose',
   ],
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.css',
@@ -11,5 +12,10 @@ export default defineNuxtConfig({
     config: {},
     injectPosition: 0,
     viewer: true,
+  },
+  mongoose: {
+    uri: process.env.MONGODB_URI ?? 'mongodb://localhost:27017',
+    options: {},
+    modelsDir: 'models',
   }
 })
