@@ -4,7 +4,7 @@ useHead({
       lang: 'ru'
     },
   meta: [
-    { name: 'Friends', content: 'Author: ebolblga and Zaver' }
+    { name: 'Friends', content: 'Author: ebolblga and Giorno-Giovana' }
   ]
 });
 </script>
@@ -16,5 +16,7 @@ useHead({
 <style>
 body {
     margin: 0;
+    background-color: #202124;
+    color: #BDC1C6;
 }
 </style>

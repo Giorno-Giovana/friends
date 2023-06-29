@@ -1,20 +1,22 @@
 <script setup lang="ts">
 useHead({ title: "Friends" });
 
-const roomName = ref("");
+// const roomName = ref("");
 
 async function createRoom() {
-    const { _id } = await $fetch('/api/create-room')
-    useRouter().push('/room/'+_id)
+    const { _id } = await $fetch('/api/create-room');
+    useRouter().push('/room/' + _id);
 }
-
 </script>
 <template>
-    <div class="h-screen">
-        <div class="w-[90vw] mx-auto">
-            <p class="text-2xl mt-10 text-center">Привет!</p>
-            <my-input id="Room_name" placeholder="Введите название комнаты" v-model="roomName">Название комнаты</my-input>
-            <my-button class="mt-10" @click="createRoom">Создать комнату</my-button>
+    <div class="h-screen flex justify-center">
+        <div class="w-[90vw] lg:w-[50vw] my-52 min-w-[300px]">
+            <p class="text-2xl mt-10 text-center font-bold">Привет!</p>
+            <p class="text-center mt-3">Планируйте встречу с друзьями? Просто создайте комнату, выделите удобное вам время для встречи и поделитесь ссылкой с остальными</p>
+            <!-- <my-input id="Room_name" placeholder="Введите название комнаты" v-model="roomName">Название комнаты</my-input> -->
+            <my-button class="mt-3" @click="createRoom">Создать новую комнату
+                <svg class="ml-3 scale-75" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"><path d="M-10-230v-63.925q0-42.096 43.5-69.085Q77-390 150.376-390H164q7 0 13 .652-9 20.348-14.68 40.615-5.681 20.267-5.681 43.557V-230H-10Zm240 0v-75q0-36 17.978-64.185Q265.955-397.37 299-418q33.867-20 80.086-31 46.218-11 100.504-11 55.331 0 101.521 11T661-418q33 21 51 49t18 64v75H230Zm573 0v-75.571q0-22.638-5-43.707-5-21.07-13-39.995 6-.727 12.243-.727H810q73.4 0 116.7 26.186Q970-337.629 970-293v63H803Zm-484-77h322v-6q-8-32-50.5-51.5T480-384q-68 0-111 20t-50 52v5ZM149.824-418Q119-418 96.5-440.273 74-462.546 74-494.003q0-31.661 22.567-53.829T149.975-570Q181-570 204-547.872q23 22.129 23 53.969Q227-463 204.561-440.5 182.123-418 149.824-418Zm660 0Q779-418 756.5-440.273q-22.5-22.273-22.5-53.73 0-31.661 22.567-53.829T809.975-570Q841-570 864-547.872q23 22.129 23 53.969Q887-463 864.561-440.5 842.123-418 809.824-418Zm-328.862-72q-53.342 0-92.152-38.354T350-620.07q0-54.93 38.81-92.43 38.81-37.5 92.152-37.5 54.909 0 91.973 37.268Q610-675.465 610-620.256q0 53.636-37.065 91.946Q535.871-490 480.962-490Zm.003-77Q501-567 517.5-582.57q16.5-15.57 16.5-38.5Q534-642 517.285-658t-37.25-16Q457-674 442-657.978q-15 16.022-15 37.75Q427-598 441.965-582.5t39 15.5ZM480-307Zm0-313Z" /></svg>
+            </my-button>
         </div>
     </div>
 </template>
