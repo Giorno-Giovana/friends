@@ -4,8 +4,12 @@ useHead({ title: "Friends" });
 // const roomName = ref("");
 
 async function createRoom() {
-    const { _id } = await $fetch('/api/create-room');
-    useRouter().push('/room/' + _id);
+    const { _id, title } = await $fetch('/api/create-room');
+    useRouter().push({
+        path:'/room/' + _id,
+        params: { title: title }
+    });
+    // console.log(title);
 }
 </script>
 <template>
