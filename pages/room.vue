@@ -4,13 +4,13 @@ import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 useHead({ title: "Friends" });
 
-interface Event {
+interface IEvent {
     start: string,
     end: string,
     title: string
 }
 
-const events = ref<Event[]>([]);
+const events = ref<IEvent[]>([]);
 events.value.push({ start: "2023-06-28 10:35", end: "2023-06-29 10:35", title: "event"})
 
 </script>
