@@ -11,12 +11,13 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/node": "^18",
-    "nuxt": "^3.6.1",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-vue": "^9.15.0",
+    "nuxt": "^3.6.1",
     "prettier": "^2.8.8",
-    "prettier-plugin-organize-imports": "^3.2.2"
+    "prettier-plugin-organize-imports": "^3.2.2",
+    "vitest": "^0.32.2"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
