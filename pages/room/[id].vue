@@ -7,15 +7,16 @@ useHead({ title: `Комната` });
 
 const { id } = useRoute().params;
 
-
 const username = ref("");
+const room = ref<IRoom>({_id: id.toString(), title: '', users: [], events: []});
 const events = ref<IEvent[]>([]);
-const room = ref<IRoom>({_id: '', title: '', users: [], events: []});
 
 interface IEvent {
-  start: string,
-  end: string,
-  title: string
+  start: Date,
+  end: Date,
+  title: string,
+  class: string,
+  background: boolean
 };
 
 onMounted(async () => {
@@ -24,17 +25,74 @@ onMounted(async () => {
   }
 
   room.value = await $fetch<IRoom>('/api/room', { query: { id: id } });
+  updateDisplayedEvents();
   room.value.title = room.value.title.charAt(0).toUpperCase() + room.value.title.slice(1);
-  room.value.title = room.value.title.replace(/^\s+|\s+$/g,'');
-  useHead({ title: `${ room.value.title }` });
-
-  // events.value.push({ start: "2023-06-28 10:35", end: "2023-06-29 10:35", title: ""});
+  room.value.title = room.value.title.replace(/^\s+|\s+$/g, '');
+  useHead({ title: `${room.value.title}` });
 });
 
 async function copyRoute() {
   const baseIP: string = 'http://localhost:3000';
   navigator.clipboard.writeText(baseIP + useRoute().path);
-  console.log(events.value);
+  console.log(room.value);
+}
+
+const addEvent = (newEvent) => {
+  room.value.events.push({ start: newEvent.start, end: newEvent.end, title: username.value });
+  events.value.push({ start: newEvent.start, end: newEvent.end, title: username.value, class: 'event', background: false });
+  const response = $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
+  console.log(response);
+  findMeetingTime();
+};
+
+async function findMeetingTime() {
+  if (room.value.events.length < 2) return;
+
+  const array: Array<{ type: string, date: Date }> = [];
+
+  room.value.events.forEach(item => {
+    array.push({ type: 'start', date: new Date(item.start) });
+    array.push({ type: 'end', date: new Date(item.end) });
+  });
+
+  array.sort((a, b) => {
+    return a.date.getTime() - b.date.getTime();
+  });
+
+  let nesting = 1;
+  let maxNesting = nesting;
+  let bestRange: { start: Date, end: Date } = { start: array[0].date, end: array[1].date };
+  for (let i = 1; i < array.length; i++) {
+    if (array[i].type === 'start') {
+      nesting++
+    } else nesting--;
+
+    if (nesting > maxNesting) {
+      maxNesting = nesting;
+      bestRange = { start: array[i].date, end: array[i + 1].date };
+    }
+  }
+
+  let flag: boolean = false;
+  events.value.forEach(item => {
+    if (item.class === 'meeting') {
+      item.start = bestRange.start;
+      item.end = bestRange.end
+      flag = true;
+    }
+  });
+
+  if (!flag) events.value.push({ title: 'Meeting', start: bestRange.start, end: bestRange.end, class: 'meeting', background: true });
+}
+
+async function updateDisplayedEvents() {
+  room.value.events.forEach( item => {
+    if (item.title === username.value) {
+      events.value.push({title: item.title, start: new Date(item.start), end: new Date(item.end), class: 'event', background: false});
+    }
+  });
+
+  findMeetingTime();
 }
 
 async function saveUsername() {
@@ -43,9 +101,11 @@ async function saveUsername() {
 
 async function roomNameChange(e) {
   if (!e.target) return;
-  const bruh = <HTMLInputElement>(e.target).innerText;
-  room.value.title = bruh.toString();
-  console.log(room.value.title);
+  const newName = <HTMLInputElement>(e.target).innerText;
+  room.value.title = newName.toString();
+  useHead({ title: `${room.value.title}` });
+  const response = await $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value, title: room.value.title } });
+  console.log(response);
 }
 </script>
 <template>
@@ -62,14 +122,27 @@ async function roomNameChange(e) {
       </div>
       <div class="h-[83vh]">
         <vue-cal
+        ref="vuecal"
+          small
           :disable-views="['years', 'year', 'month']"
           :time-from="0 * 60"
           :time-to="24 * 60"
           :time-step="60"
+          :snap-to-time="15"
           locale="ru"
           :events="events"
+          @event-drag-create="addEvent"
           :editable-events="{ title: false, drag: true, resize: true, delete: true, create: true }">
         </vue-cal>
       </div>
     </div>
 </template>
+<style>
+.vuecal__event.meeting {
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);/* IE 10+ */
+  color: #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
