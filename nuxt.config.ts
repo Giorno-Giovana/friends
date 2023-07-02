@@ -4,6 +4,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     'nuxt-mongoose',
+    '@vueuse/nuxt',
+    'nuxt-icon'
   ],
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.css',
