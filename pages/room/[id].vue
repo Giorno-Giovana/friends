@@ -27,7 +27,7 @@ onMounted(async () => {
   useHead({ title: `${room.value.title}` });
 });
 
-const addEvent = (newEvent) => {
+const addEvent = (newEvent: any) => {
   room.value.events.push({ start: newEvent.start, end: newEvent.end, title: username.value });
   events.value.push({ start: newEvent.start, end: newEvent.end, title: username.value, class: 'event', background: false });
   const response = $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
@@ -85,14 +85,14 @@ async function updateDisplayedEvents() {
   findMeetingTime();
 }
 
-async function roomNameChange(e) {
-  if (!e.target) return;
-  const newName = <HTMLInputElement>(e.target).innerText;
-  room.value.title = newName.toString();
-  useHead({ title: `${room.value.title}` });
-  const response = await $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value, title: room.value.title } });
-  console.log(response);
-}
+// async function roomNameChange(e) {
+//   if (!e.target) return;
+//   const newName = <HTMLInputElement>(e.target).innerText;
+//   room.value.title = newName.toString();
+//   useHead({ title: `${room.value.title}` });
+//   const response = await $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value, title: room.value.title } });
+//   console.log(response);
+// }
 
 async function copyRoute() {
   navigator.clipboard.writeText(window.location.href);
@@ -104,7 +104,9 @@ async function copyRoute() {
         <Icon class="hover:scale-95" name="ic:baseline-arrow-back-ios-new" size="32px" color="#EC81FE" />
       </NuxtLink>
       <div class="h-[17vh] w-[90vw] lg:w-[50vw] min-w-[300px] mx-auto">
-        <p class="text-center">Комната "<span contenteditable class="cursor-pointer" @input="roomNameChange($event)">{{ room.title }}</span>"</p>
+        <!-- <p class="text-center">Комната "<span contenteditable class="cursor-pointer" @input="roomNameChange($event)">{{ room.title }}</span>"</p> -->
+        <p class="text-center w-full inline">Комната: </p>
+        <input v-model="room.title" class="outline-none bg-transparent cursor-pointer w-[70%]" />
         <my-input id="name" placeholder="Введите имя" v-model="username">Ваше имя</my-input>
         <my-button class="mt-1" @click="copyRoute">Копировать ссылку на комнату
           <Icon class="ml-3" name="ic:baseline-content-copy" size="24px" />
