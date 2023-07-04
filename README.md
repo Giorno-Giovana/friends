@@ -1,63 +1,24 @@
-# Nuxt 3 Minimal Starter
+# Friends
+## Планируйте встречу с друзьями? Просто создайте комнату, выделите удобное вам время для встречи и поделитесь ссылкой с остальными
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### Главный экран  
+![image](https://github.com/Giorno-Giovana/friends/assets/82185066/a31b7942-a804-41b3-acfe-b8ce8e7f2c46)
 
-## Setup
+### Комната  
+![image](https://github.com/Giorno-Giovana/friends/assets/82185066/ea1420dc-0857-41a1-a8e6-f56130537062)
 
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+## Как запустить проект используя [Node.js](https://nodejs.org/ru), [Docker](https://www.docker.com/products/docker-desktop/) и [Visual Studio Code](https://code.visualstudio.com/)
 
 ```bash
-# npm
-npm run dev
+# соберите контейнеры из docker-образа
+docker-compose up
 
-# pnpm
-pnpm run dev
+# теперь установите все модули
+yarn
 
-# yarn
+# теперь запустите проект
 yarn dev
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Лицензия
+Эта программа распространяется под лицензией Apache license 2.0. Пожалуйста, прочтите файл лицензии, чтобы узнать об условиях использования.
