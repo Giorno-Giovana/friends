@@ -30,13 +30,57 @@ onMounted(async () => {
   useHead({ title: `${room.value.title}` });
 });
 
-const addEvent = (newEvent: any) => {
-  room.value.events.push({ start: newEvent.start, end: newEvent.end, title: username.value });
-  events.value.push({ start: newEvent.start, end: newEvent.end, title: username.value, class: 'event', background: false, deletable: true, resizable: true, draggable: true });
-  const response = $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
-  console.log(response);
+const createEvent = async (newEvent: any) => {
+  room.value.events.push({ start: newEvent.start.toISOString(), end: newEvent.end.toISOString(), title: username.value });
+  events.value.push({ start: newEvent.start, end: newEvent.end, title: username.value, class: 'event', background: false, deletable: true, resizable: true, draggable: false });
+  $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
   findMeetingTime();
 };
+
+// Ну тут грязь без поля _eid в IEvent
+const deleteEvent = async (originalEvent: any) => {
+  for (let i = 0; i < room.value.events.length; i++) {
+    if (room.value.events[i].title === originalEvent.title) {
+      if (room.value.events[i].start === originalEvent.start.toISOString()) {
+        if (room.value.events[i].end === originalEvent.end.toISOString()) {
+          room.value.events.splice(i, 1);
+          updateDisplayedEvents();
+          $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
+          return;
+        }
+      }
+    }
+  }
+}
+
+// Ну тут тоже грязь без поля _eid в IEvent
+const editEvent = async (eventForEdit: any) => {
+  for (let i = 0; i < room.value.events.length; i++) {
+    if (room.value.events[i].title === eventForEdit.originalEvent.title) {
+      if (room.value.events[i].start === eventForEdit.originalEvent.start.toISOString()) {
+        if (room.value.events[i].end === eventForEdit.originalEvent.end.toISOString()) {
+          room.value.events[i].end = eventForEdit.event.end;
+          updateDisplayedEvents();
+          $fetch<IRoom>('/api/room', { method: 'PUT', body: { ...room.value } });
+          return;
+        }
+      }
+    }
+  }
+}
+
+async function updateDisplayedEvents() {
+  events.value = [];
+  room.value.events.forEach( item => {
+    if (item.title === username.value) {
+      events.value.push({title: item.title, start: new Date(item.start), end: new Date(item.end), class: 'event', background: false, deletable: true, resizable: true, draggable: true});
+    } else {
+      events.value.push({title: item.title, start: new Date(item.start), end: new Date(item.end), class: getColorClass(item.title), background: true, deletable: false, resizable: false, draggable: false});
+    }
+  });
+
+  findMeetingTime();
+}
 
 async function findMeetingTime() {
   if (room.value.events.length < 2) return;
@@ -78,18 +122,6 @@ async function findMeetingTime() {
   if (!flag) events.value.push({ title: 'Встреча-', start: bestRange.start, end: bestRange.end, class: 'meeting', background: true, deletable: false, resizable: false, draggable: false });
 }
 
-async function updateDisplayedEvents() {
-  room.value.events.forEach( item => {
-    if (item.title === username.value) {
-      events.value.push({title: item.title, start: new Date(item.start), end: new Date(item.end), class: 'event', background: false, deletable: true, resizable: true, draggable: true});
-    } else {
-      events.value.push({title: item.title, start: new Date(item.start), end: new Date(item.end), class: getColorClass(item.title), background: true, deletable: false, resizable: false, draggable: false});
-    }
-  });
-
-  findMeetingTime();
-}
-
 function getColorClass(str: string) {
   let sum = 0;
   for (let i = 0; i < str.length; i++) {
@@ -126,8 +158,10 @@ async function copyRoute() {
           :snap-to-time="15"
           locale="ru"
           :events="events"
-          @event-drag-create="addEvent"
-          :editable-events="{ title: false, drag: true, resize: true, delete: true, create: true }">
+          @event-drag-create="createEvent"
+          @event-delete="deleteEvent"
+          @event-duration-change="editEvent"
+          :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }">
         </vue-cal>
       </div>
     </div>
@@ -155,25 +189,14 @@ async function copyRoute() {
 .vuecal__cell--selected {background-color: rgba(0, 0, 0, 0.5);} /*Цвет подсветки выделенного дня*/
 .vuecal__now-line {color: #EC81FE;} /*Цвет линии времени*/
 
-.vuecal__event._0 {background-color: rgba(223, 7, 114, 0.2);}
-.vuecal__event._1 {background-color: rgba(254, 84, 111, 0.2);}
-.vuecal__event._2 {background-color: rgba(255, 158, 125, 0.2);}
-.vuecal__event._3 {background-color: rgba(255, 208, 128, 0.2);}
-.vuecal__event._4 {background-color: rgba(255, 253, 255, 0.2);}
-.vuecal__event._5 {background-color: rgba(11, 255, 230, 0.2);}
-.vuecal__event._6 {background-color: rgba(1, 203, 207, 0.2);}
-.vuecal__event._7 {background-color: rgba(1, 136, 165, 0.2);}
-.vuecal__event._8 {background-color: rgba(62, 50, 100, 0.2);}
-.vuecal__event._9 {background-color: rgba(53, 42, 85, 0.2);}
-
-/* .vuecal__event._0 {background-color: rgba(251, 248, 253, 0.2);}
-.vuecal__event._1 {background-color: rgba(161, 169, 209, 0.2);}
-.vuecal__event._2 {background-color: rgba(0, 127, 255, 0.2);}
-.vuecal__event._3 {background-color: rgba(36, 37, 111, 0.2);}
-.vuecal__event._4 {background-color: rgba(20, 18, 24, 0.2);}
-.vuecal__event._5 {background-color: rgba(95, 14, 82, 0.2);}
-.vuecal__event._6 {background-color: rgba(253, 26, 67, 0.2);}
-.vuecal__event._7 {background-color: rgba(255, 177, 108, 0.2);}
-.vuecal__event._8 {background-color: rgba(254, 222, 91, 0.2);}
-.vuecal__event._9 {background-color: rgba(116, 234, 214, 0.2);} */
+.vuecal__event._0 {background-color: rgba(223, 7, 114, 0.2);pointer-events: none;}
+.vuecal__event._1 {background-color: rgba(254, 84, 111, 0.2);pointer-events: none;}
+.vuecal__event._2 {background-color: rgba(255, 158, 125, 0.2);pointer-events: none;}
+.vuecal__event._3 {background-color: rgba(255, 208, 128, 0.2);pointer-events: none;}
+.vuecal__event._4 {background-color: rgba(255, 253, 255, 0.2);pointer-events: none;}
+.vuecal__event._5 {background-color: rgba(11, 255, 230, 0.2);pointer-events: none;}
+.vuecal__event._6 {background-color: rgba(1, 203, 207, 0.2);pointer-events: none;}
+.vuecal__event._7 {background-color: rgba(1, 136, 165, 0.2);pointer-events: none;}
+.vuecal__event._8 {background-color: rgba(62, 50, 100, 0.2);pointer-events: none;}
+.vuecal__event._9 {background-color: rgba(53, 42, 85, 0.2);pointer-events: none;}
 </style>
